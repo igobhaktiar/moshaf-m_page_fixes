@@ -27,16 +27,13 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
         );
         try {
           final SharedPreferences sharedPreferences = getItInstance();
-          int pageIndex = sharedPreferences
-                  .getInt(AppStrings.savedCurrentMoshafPageNumber) ??
-              AyahRenderBlocHelper.intialPageIndex;
+          int pageIndex = sharedPreferences.getInt(AppStrings.savedCurrentMoshafPageNumber) ?? AyahRenderBlocHelper.intialPageIndex;
           emit(
             AyahRendered(
               pageIndex: pageIndex,
             ),
           );
-          final BuildContext? currentContext =
-              getItInstance<NavigationService>().getContext();
+          final BuildContext? currentContext = getItInstance<NavigationService>().getContext();
           if (currentContext != null) {
             AyahRenderBlocHelper.pageChangeInitialize(
               currentContext,
@@ -57,47 +54,37 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
           //Get Application Context To Fetch State
           final BuildContext? currentContext = AppContext.getAppContext();
           if (currentContext != null) {
-            final AyahRenderState currentState =
-                BlocProvider.of<AyahRenderBloc>(currentContext).state;
+            final AyahRenderState currentState = BlocProvider.of<AyahRenderBloc>(currentContext).state;
             //Fetch Ayah Render Bloc State
-            if (currentState is AyahRendered &&
-                currentState.pageIndex != null) {
+            if (currentState is AyahRendered && currentState.pageIndex != null) {
               final SharedPreferences sharedPreferences = getItInstance();
-              sharedPreferences.setInt(AppStrings.savedCurrentMoshafPageNumber,
-                  event.currentPageIndex);
+              sharedPreferences.setInt(AppStrings.savedCurrentMoshafPageNumber, event.currentPageIndex);
 
               String currentPage = AppStrings.getAssetSvgNormalPagePath(
                 event.currentPageIndex + 1,
               );
 
-              if (currentState.svgData != null &&
-                  currentState.svgDataNextPage != null) {
+              if (currentState.svgData != null && currentState.svgDataNextPage != null) {
                 //This means that svg data is not null hence we already have svgData
                 // Change Next SvgData to Svg Data and Fetch Next Svg Data
                 //Update Current Svg Data
-                XmlDocument nextDocument =
-                    XmlDocument.parse(currentState.svgDataNextPage!);
-                List<XmlElement> nextElements =
-                    AyahRenderBlocHelper.getXmlElements(
+                XmlDocument nextDocument = XmlDocument.parse(currentState.svgDataNextPage!);
+                List<XmlElement> nextElements = AyahRenderBlocHelper.getXmlElements(
                   nextDocument,
                 );
                 double nextWidth = 0, nextHeight = 0;
-                (nextWidth, nextHeight) =
-                    AyahRenderBlocHelper.getWidthAndHeight(
+                (nextWidth, nextHeight) = AyahRenderBlocHelper.getWidthAndHeight(
                   nextDocument,
                   nextElements,
                 );
                 if (nextWidth == 0 && nextHeight == 0) {
                   throw Exception("Condition Failed: width !=0 && height !=0");
                 }
-                List<SvgElement> nextSvgElementsList =
-                    AyahRenderBlocHelper.getSvgElementList(
+                List<SvgElement> nextSvgElementsList = AyahRenderBlocHelper.getSvgElementList(
                   nextElements,
                 );
 
-                String? nextOriginalFetchBox =
-                    AyahRenderBlocHelper.fetchViewBoxOriginal(
-                        currentContext, currentState.svgDataNextPage!);
+                String? nextOriginalFetchBox = AyahRenderBlocHelper.fetchViewBoxOriginal(currentContext, currentState.svgDataNextPage!);
                 emit(
                   AyahRendering(),
                 );
@@ -125,8 +112,7 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
                   event.darkThemeTextShade,
                 );
                 if (nextSvgData != null) {
-                  final AyahRenderState currentNewState =
-                      BlocProvider.of<AyahRenderBloc>(currentContext).state;
+                  final AyahRenderState currentNewState = BlocProvider.of<AyahRenderBloc>(currentContext).state;
                   if (currentNewState is AyahRendered) {
                     emit(
                       AyahRendering(),
@@ -155,16 +141,13 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
                 // String? svgData = await rootBundle.loadString(
                 //   AyahRenderBlocHelper.getSvgString(event.currentPageIndex),
                 // );
-                String? svgData =
-                    await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
+                String? svgData = await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
                   AyahRenderBlocHelper.getSvgStringFromIndex(
                     event.currentPageIndex,
                   ),
                 );
-                if (!ZoomService().isBorderEnable(event.zoomPercentage) &&
-                    event.currentPageIndex + 1 < 3) {
-                  svgData =
-                      await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
+                if (!ZoomService().isBorderEnable(event.zoomPercentage) && event.currentPageIndex + 1 < 3) {
+                  svgData = await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
                     AyahRenderBlocHelper.getSvgStringFromIndex(
                       event.currentPageIndex,
                       addInString: '-level3',
@@ -186,8 +169,7 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
                 );
 
                 bool isCustomColor = false;
-                if (event.quranTextColor !=
-                    QuranDetailsService.defaultQuranTextColor) {
+                if (event.quranTextColor != QuranDetailsService.defaultQuranTextColor) {
                   isCustomColor = true;
                 }
                 XmlDocument document = XmlDocument.parse(svgData);
@@ -239,14 +221,11 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
                     isCustom: isCustomColor,
                   );
                 }
-                List<SvgElement> svgElementsList =
-                    AyahRenderBlocHelper.getSvgElementList(
+                List<SvgElement> svgElementsList = AyahRenderBlocHelper.getSvgElementList(
                   elements,
                 );
 
-                String? originalFetchBox =
-                    AyahRenderBlocHelper.fetchViewBoxOriginal(
-                        currentContext, svgData);
+                String? originalFetchBox = AyahRenderBlocHelper.fetchViewBoxOriginal(currentContext, svgData);
                 emit(
                   AyahRendering(),
                 );
@@ -274,8 +253,7 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
                   event.darkThemeTextShade,
                 );
                 if (nextSvgData != null) {
-                  final AyahRenderState currentNewState =
-                      BlocProvider.of<AyahRenderBloc>(currentContext).state;
+                  final AyahRenderState currentNewState = BlocProvider.of<AyahRenderBloc>(currentContext).state;
                   if (currentNewState is AyahRendered) {
                     emit(
                       AyahRendering(),
@@ -314,25 +292,20 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
     on<IntializeRenderWidget>(
       (event, emit) async {
         try {
-          final BuildContext? currentContext =
-              getItInstance<NavigationService>().getContext();
+          final BuildContext? currentContext = getItInstance<NavigationService>().getContext();
           if (currentContext != null) {
-            final AyahRenderState currentState =
-                BlocProvider.of<AyahRenderBloc>(currentContext).state;
+            final AyahRenderState currentState = BlocProvider.of<AyahRenderBloc>(currentContext).state;
             AyahRenderState? savedCurrentState;
 
-            if (currentState is AyahRendered &&
-                currentState.pageIndex != null) {
+            if (currentState is AyahRendered && currentState.pageIndex != null) {
               final SharedPreferences sharedPreferences = getItInstance();
-              sharedPreferences.setInt(AppStrings.savedCurrentMoshafPageNumber,
-                  event.currentPageIndex);
+              sharedPreferences.setInt(AppStrings.savedCurrentMoshafPageNumber, event.currentPageIndex);
               savedCurrentState = currentState;
 
               String currentPage = AppStrings.getAssetSvgNormalPagePath(
                 event.currentPageIndex + 1,
               );
-              String? svgData =
-                  await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
+              String? svgData = await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
                 AyahRenderBlocHelper.getSvgStringFromIndex(
                   event.currentPageIndex,
                 ),
@@ -342,10 +315,8 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
               //   AyahRenderBlocHelper.getSvgString(event.currentPageIndex),
               // );
 
-              if (!ZoomService().isBorderEnable(event.zoomPercentage) &&
-                  event.currentPageIndex + 1 < 3) {
-                svgData =
-                    await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
+              if (!ZoomService().isBorderEnable(event.zoomPercentage) && event.currentPageIndex + 1 < 3) {
+                svgData = await PlayAssetDelivery.getSvgDataFromPlayAssetDelivery(
                   AyahRenderBlocHelper.getSvgStringFromIndex(
                     event.currentPageIndex,
                     addInString: '-level3',
@@ -368,8 +339,7 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
               );
 
               bool isCustomColor = false;
-              if (event.quranTextColor !=
-                  QuranDetailsService.defaultQuranTextColor) {
+              if (event.quranTextColor != QuranDetailsService.defaultQuranTextColor) {
                 isCustomColor = true;
               }
               XmlDocument document = XmlDocument.parse(svgData);
@@ -421,14 +391,11 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
                   isCustom: isCustomColor,
                 );
               }
-              List<SvgElement> svgElementsList =
-                  AyahRenderBlocHelper.getSvgElementList(
+              List<SvgElement> svgElementsList = AyahRenderBlocHelper.getSvgElementList(
                 elements,
               );
 
-              String? originalFetchBox =
-                  AyahRenderBlocHelper.fetchViewBoxOriginal(
-                      currentContext, svgData);
+              String? originalFetchBox = AyahRenderBlocHelper.fetchViewBoxOriginal(currentContext, svgData);
               emit(
                 AyahRendering(),
               );
@@ -469,22 +436,17 @@ class AyahRenderBloc extends Bloc<AyahRenderEvent, AyahRenderState> {
           );
           emit(AyahRendered(
             pageIndex: event.pageIndex ?? event.previousState.pageIndex,
-            quranTextColor:
-                event.quranTextColor ?? event.previousState.quranTextColor,
-            darkThemeTextShade: event.darkThemeTextShade ??
-                event.previousState.darkThemeTextShade,
+            quranTextColor: event.quranTextColor ?? event.previousState.quranTextColor,
+            darkThemeTextShade: event.darkThemeTextShade ?? event.previousState.darkThemeTextShade,
             currentPage: event.currentPage ?? event.previousState.currentPage,
             svgData: event.svgData ?? event.previousState.svgData,
             document: event.document ?? event.previousState.document,
             elements: event.elements ?? event.previousState.elements,
             svgWidth: event.svgWidth ?? event.previousState.svgWidth,
             svgHeight: event.svgHeight ?? event.previousState.svgHeight,
-            svgElementsList:
-                event.svgElementsList ?? event.previousState.svgElementsList,
-            layoutContext:
-                event.layoutContext ?? event.previousState.layoutContext,
-            originalViewBox:
-                event.originalViewBox ?? event.previousState.originalViewBox,
+            svgElementsList: event.svgElementsList ?? event.previousState.svgElementsList,
+            layoutContext: event.layoutContext ?? event.previousState.layoutContext,
+            originalViewBox: event.originalViewBox ?? event.previousState.originalViewBox,
           ));
         } catch (e) {
           debugPrint(e.toString());

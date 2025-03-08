@@ -7,10 +7,8 @@ import 'package:qeraat_moshaf_kwait/core/enums/moshaf_type_enum.dart';
 import 'package:qeraat_moshaf_kwait/core/responsiveness/responsive_framework_helper.dart';
 import 'package:qeraat_moshaf_kwait/core/utils/app_colors.dart';
 import 'package:qeraat_moshaf_kwait/core/utils/app_strings.dart';
-import 'package:qeraat_moshaf_kwait/features/ayatHighlight/presentation/cubit/ayathighlight_cubit.dart'
-    show AyatHighlightCubit, AyatHighlightState;
-import 'package:qeraat_moshaf_kwait/features/essential_moshaf_feature/presentation/cubit/essential_moshaf_cubit.dart'
-    show EssentialMoshafCubit;
+import 'package:qeraat_moshaf_kwait/features/ayatHighlight/presentation/cubit/ayathighlight_cubit.dart' show AyatHighlightCubit, AyatHighlightState;
+import 'package:qeraat_moshaf_kwait/features/essential_moshaf_feature/presentation/cubit/essential_moshaf_cubit.dart' show EssentialMoshafCubit;
 import 'package:qeraat_moshaf_kwait/features/essential_moshaf_feature/presentation/cubit/zoom_cubit/zoom_cubit.dart';
 import 'package:qeraat_moshaf_kwait/features/essential_moshaf_feature/presentation/widgets/bottom_widget_bloc_wrapped_quran_page_widget.dart';
 import 'package:qeraat_moshaf_kwait/features/tenReadings/data/models/khelafia_word_model.dart';
@@ -78,8 +76,7 @@ class _QuranPageWidgetState extends State<QuranPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AyatHighlightCubit, AyatHighlightState>(
-        builder: (context, state) {
+    return BlocBuilder<AyatHighlightCubit, AyatHighlightState>(builder: (context, state) {
       return BlocBuilder<ZoomCubit, ZoomState>(
         builder: (context, zoomCubitState) {
           print(MediaQuery.of(context).size.height);
@@ -107,15 +104,9 @@ class _QuranPageWidgetState extends State<QuranPageWidget> {
     });
   }
 
-  bool checkScreen(BuildContext context, TenReadingsCubit tenCubit,
-      TenReadingsState tenState2) {
+  bool checkScreen(BuildContext context, TenReadingsCubit tenCubit, TenReadingsState tenState2) {
     final moshafType = context.read<EssentialMoshafCubit>().currentMoshafType;
-    final isColoredPageExists = File(
-            "${tenCubit.coloredImagesSubFolderPath}${AppStrings.getColoredImageFileName(widget.index + 1)}")
-        .existsSync();
-    return (moshafType == MoshafTypes.TEN_READINGS &&
-        ((tenCubit.coloredImagesSubFolderPath.isNotEmpty &&
-                isColoredPageExists) ||
-            tenState2 is TenreadingsServicesLoaded));
+    final isColoredPageExists = File("${tenCubit.coloredImagesSubFolderPath}${AppStrings.getColoredImageFileName(widget.index + 1)}").existsSync();
+    return (moshafType == MoshafTypes.TEN_READINGS && ((tenCubit.coloredImagesSubFolderPath.isNotEmpty && isColoredPageExists) || tenState2 is TenreadingsServicesLoaded));
   }
 }

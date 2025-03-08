@@ -256,7 +256,7 @@ class _OrdinaryMoshafMainScreenState extends State<OrdinaryMoshafMainScreen> {
                               ),
                               bottomWidget: (context.isLandscape)
                                   //  ? const QeeratBottomHorizontalWidget()
-                                  ? SizedBox()
+                                  ? const SizedBox()
                                   : const CustomBottomConvextSheet(),
                             );
                     } else {

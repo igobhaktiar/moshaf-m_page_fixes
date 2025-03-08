@@ -18,8 +18,7 @@ class AyahBlocWrappedWidget extends StatelessWidget {
         if (ayahRenderState is AyahRendering) {
           return const MoshafLoader();
         }
-        if (ayahRenderState is AyahRendered &&
-            ayahRenderState.svgData != null) {
+        if (ayahRenderState is AyahRendered && ayahRenderState.svgData != null) {
           ZoomEnum currentZoom = ZoomService().getCurrentZoomEnum(context);
 
           return Padding(
@@ -44,7 +43,7 @@ class AyahBlocWrappedWidget extends StatelessWidget {
           );
         }
         return const MoshafLoader();
-        // return const CircularProgressIndicator();
+        // // return const CircularProgressIndicator();
         // return const Text("No data");
       },
     );

@@ -53,8 +53,7 @@ Future<void> main() async {
     await Hive.openBox(AppStrings.termsAndConditions);
     await Hive.openBox(AppStrings.privacyPolicy);
 
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
 
     BlocOverrides.runZoned(
       () {

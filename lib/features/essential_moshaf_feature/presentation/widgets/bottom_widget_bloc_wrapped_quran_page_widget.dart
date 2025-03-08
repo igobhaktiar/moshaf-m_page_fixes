@@ -42,20 +42,14 @@ class _ScrollControlledChild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var orientation = MediaQuery.of(context).orientation;
     return Container(
       width: actualWidth,
-      height: MediaQuery.of(context).orientation == Orientation.landscape
-          ? (actualWidth / AppConstants.moshafPageAspectRatio) - 200
-          : actualHeight,
-      padding:
-          context.read<EssentialMoshafCubit>().isToShowTopBottomNavListViews
-              ? const EdgeInsets.symmetric(vertical: 10, horizontal: 0)
-              : EdgeInsets.zero,
+      height: orientation == Orientation.landscape ? (actualWidth / AppConstants.moshafPageAspectRatio) - 200 : actualHeight,
+      padding: context.read<EssentialMoshafCubit>().isToShowTopBottomNavListViews ? const EdgeInsets.symmetric(vertical: 10, horizontal: 0) : EdgeInsets.zero,
       child: QuranPageOnTapWrapper(
         isBottomOpened: isBottomOpened,
-        height: MediaQuery.of(context).orientation == Orientation.landscape
-            ? (actualWidth / AppConstants.moshafPageAspectRatio) - 200
-            : actualHeight,
+        height: orientation == Orientation.landscape ? (actualWidth / AppConstants.moshafPageAspectRatio) - 200 : actualHeight,
         child: child,
       ),
     );

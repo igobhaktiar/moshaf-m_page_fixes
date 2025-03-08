@@ -29,6 +29,7 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
   bool isClosing = false;
   @override
   Widget build(BuildContext context) {
+    
     return LayoutBuilder(
       builder: (context, constraints) {
         if (context.isLandscape) {
