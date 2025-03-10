@@ -168,9 +168,9 @@ class ExternalLibrariesCubit extends Cubit<ExternalLibrariesState> {
             emit(ExternalLibraryDownloadingFile(percentage));
             downloadingPdfProgressMap[title] = percentage;
 
-            // Save progress periodically (every 1MB)
+            // Save progress periodically every percentage
             if (received % 1048576 == 0) {
-              saveDownloadProgress(title, modified, received);
+              await saveDownloadProgress(title, modified, received);
             }
 
             if ((received / total) == 1) {
@@ -339,6 +339,8 @@ class ExternalLibrariesCubit extends Cubit<ExternalLibrariesState> {
         // set download status
         isDownloadingPdfMap[title] = true;
         isPaused[title] = false;
+
+        print('ispause on resume: ${isPaused[title]}');
 
         try {
           // download remaining part using a custom URL with range

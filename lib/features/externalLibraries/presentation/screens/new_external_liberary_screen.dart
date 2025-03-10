@@ -139,22 +139,24 @@ class _NewExternalLibrariesScreenState extends State<NewExternalLibrariesScreen>
                             builder: (BuildContext ctx, AsyncSnapshot f) {
                               final isDownloading = _cubit.isDownloadingPdfMap[libraryResource.title!] == true;
                               String percentage = _cubit.downloadingPdfProgressMap[libraryResource.title!] ?? '0.0';
-                              final isPaused = _cubit.isPaused[libraryResource.title!] == true;
-
-                              if (isDownloading || isPaused) {
+                              bool? isPaused = _cubit.isPaused[libraryResource.title!];
+                              if (isDownloading || isPaused == true) {
                                 return Padding(
                                     padding: const EdgeInsets.all(8),
                                     child: GestureDetector(
                                       onTap: () {
-                                        print('isPaused: $isPaused');
-
-                                        if (isPaused) {
+                                        if (isPaused == true) {
+                                          print('resume download');
                                           _cubit.resumeDownload(libraryResource, context);
                                         } else {
+                                          print('pause download');
                                           _cubit.pauseDownload(libraryResource.title!);
                                         }
 
-                                        setState(() {});
+                                        setState(() {
+                                          isPaused = _cubit.isPaused[libraryResource.title!]!;
+                                          print('paused: $isPaused');
+                                        });
                                       },
                                       child: Row(
                                         children: [
@@ -173,11 +175,7 @@ class _NewExternalLibrariesScreenState extends State<NewExternalLibrariesScreen>
                                                 top: 0,
                                                 bottom: 0,
                                                 child: Center(
-                                                  child: isPaused == true
-                                                      ? const SizedBox()
-                                                      : isPaused == false
-                                                          ? SvgPicture.asset(AppAssets.pause)
-                                                          : const SizedBox(),
+                                                  child: isPaused == false ? SvgPicture.asset(AppAssets.pause) : const SizedBox(),
                                                 ),
                                               )
                                             ],
