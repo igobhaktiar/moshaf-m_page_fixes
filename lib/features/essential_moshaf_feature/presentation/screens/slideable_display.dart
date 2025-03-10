@@ -29,7 +29,6 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
   bool isClosing = false;
   @override
   Widget build(BuildContext context) {
-    
     return LayoutBuilder(
       builder: (context, constraints) {
         if (context.isLandscape) {
@@ -37,9 +36,7 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
             children: [
               // First widget
               SizedBox(
-                width: widget.isOpenOnlyTop
-                    ? constraints.maxWidth
-                    : constraints.maxWidth * division,
+                width: widget.isOpenOnlyTop ? constraints.maxWidth : constraints.maxWidth * division,
                 child: widget.topWidget,
               ),
 
@@ -51,29 +48,25 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
                     setState(() {
                       // Update the division based on drag amount
                       division += details.delta.dx / constraints.maxWidth;
-                      division =
-                          division.clamp(0.1, 0.9); // Limit between 10% and 90%
+                      division = division.clamp(0.1, 0.9); // Limit between 10% and 90%
                     });
                   },
                   onPanEnd: (details) {
                     // Check the velocity of the drag
-                    if (details.velocity.pixelsPerSecond.dx >
-                        _snapCloseThreshold) {
+                    if (details.velocity.pixelsPerSecond.dx > _snapCloseThreshold) {
                       // If velocity is greater than the threshold, close the bottom widget
                       setState(() {
                         isClosing = true;
                         division = 1.0; // Snap to close
                       });
-                      context.read<BottomWidgetCubit>().setBottomWidgetState(
-                          false, afterExecutionFunction: () {
+                      context.read<BottomWidgetCubit>().setBottomWidgetState(false, afterExecutionFunction: () {
                         setState(() {
                           division = 0.5;
                           isClosing = false;
                         });
                       });
                       // Optionally: You could add an animation to make it smooth
-                    } else if (details.velocity.pixelsPerSecond.dx <
-                        -_snapCloseThreshold) {
+                    } else if (details.velocity.pixelsPerSecond.dx < -_snapCloseThreshold) {
                       // If dragged upwards fast, fully open the bottom widget
                       setState(() {
                         isClosing = false;
@@ -98,9 +91,7 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
                           padding: const EdgeInsets.only(bottom: 5.0),
                           child: Icon(
                             Icons.drag_handle,
-                            color: context.isDarkMode
-                                ? Colors.white
-                                : AppColors.cardBgDark,
+                            color: context.isDarkMode ? Colors.white : AppColors.cardBgDark,
                           ),
                         ),
                       ),
@@ -120,9 +111,7 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
             children: [
               // First widget
               SizedBox(
-                height: widget.isOpenOnlyTop
-                    ? constraints.maxHeight
-                    : constraints.maxHeight * division,
+                height: widget.isOpenOnlyTop ? constraints.maxHeight : constraints.maxHeight * division,
                 child: widget.topWidget,
               ),
 
@@ -134,29 +123,25 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
                     setState(() {
                       // Update the division based on drag amount
                       division += details.delta.dy / constraints.maxHeight;
-                      division =
-                          division.clamp(0.1, 0.9); // Limit between 10% and 90%
+                      division = division.clamp(0.1, 0.9); // Limit between 10% and 90%
                     });
                   },
                   onPanEnd: (details) {
                     // Check the velocity of the drag
-                    if (details.velocity.pixelsPerSecond.dy >
-                        _snapCloseThreshold) {
+                    if (details.velocity.pixelsPerSecond.dy > _snapCloseThreshold) {
                       // If velocity is greater than the threshold, close the bottom widget
                       setState(() {
                         isClosing = true;
                         division = 1.0; // Snap to close
                       });
-                      context.read<BottomWidgetCubit>().setBottomWidgetState(
-                          false, afterExecutionFunction: () {
+                      context.read<BottomWidgetCubit>().setBottomWidgetState(false, afterExecutionFunction: () {
                         setState(() {
                           division = 0.5;
                           isClosing = false;
                         });
                       });
                       // Optionally: You could add an animation to make it smooth
-                    } else if (details.velocity.pixelsPerSecond.dy <
-                        -_snapCloseThreshold) {
+                    } else if (details.velocity.pixelsPerSecond.dy < -_snapCloseThreshold) {
                       // If dragged upwards fast, fully open the bottom widget
                       setState(() {
                         isClosing = false;
@@ -177,9 +162,7 @@ class _SlideableDisplayState extends State<SlideableDisplay> {
                     child: Center(
                       child: Icon(
                         Icons.drag_handle,
-                        color: context.isDarkMode
-                            ? Colors.white
-                            : AppColors.cardBgDark,
+                        color: context.isDarkMode ? Colors.white : AppColors.cardBgDark,
                       ),
                     ),
                   ),

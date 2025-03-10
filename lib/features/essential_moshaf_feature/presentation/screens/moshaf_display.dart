@@ -44,8 +44,7 @@ class MoshafDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isPlaying = context.watch<ListeningCubit>().player.playing;
     int zoomPercent = context.watch<ZoomCubit>().state.zoomPercentage;
-    bool isBottomSheetOpened =
-        context.watch<BottomWidgetCubit>().getBottomWidgetState(context);
+    bool isBottomSheetOpened = context.watch<BottomWidgetCubit>().getBottomWidgetState(context);
 
     // Get current page from cubit for synchronization
     final essentialMoshafCubit = context.watch<EssentialMoshafCubit>();
@@ -65,15 +64,9 @@ class MoshafDisplay extends StatelessWidget {
                       childForMobile: Builder(builder: (context) {
                         // Synchronize the single-page view
                         WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (essentialMoshafCubit
-                                  .moshafPageController.hasClients &&
-                              essentialMoshafCubit.moshafPageController.page
-                                      ?.round() !=
-                                  currentPage) {
-                            print(
-                                "Syncing single page view to page: $currentPage");
-                            essentialMoshafCubit.moshafPageController
-                                .jumpToPage(currentPage);
+                          if (essentialMoshafCubit.moshafPageController.hasClients && essentialMoshafCubit.moshafPageController.page?.round() != currentPage) {
+                            print("Syncing single page view to page: $currentPage");
+                            essentialMoshafCubit.moshafPageController.jumpToPage(currentPage);
                           }
                         });
 
@@ -91,15 +84,9 @@ class MoshafDisplay extends StatelessWidget {
                         // Synchronize the two-page view
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           final expectedPageViewIndex = currentPage ~/ 2;
-                          if (essentialMoshafCubit
-                                  .moshafPageController.hasClients &&
-                              essentialMoshafCubit.moshafPageController.page
-                                      ?.round() !=
-                                  expectedPageViewIndex) {
-                            print(
-                                "Syncing two-page view to index: $expectedPageViewIndex (page: $currentPage)");
-                            essentialMoshafCubit.moshafPageController
-                                .jumpToPage(expectedPageViewIndex);
+                          if (essentialMoshafCubit.moshafPageController.hasClients && essentialMoshafCubit.moshafPageController.page?.round() != expectedPageViewIndex) {
+                            print("Syncing two-page view to index: $expectedPageViewIndex (page: $currentPage)");
+                            essentialMoshafCubit.moshafPageController.jumpToPage(expectedPageViewIndex);
                           }
                         });
 
@@ -120,9 +107,7 @@ class MoshafDisplay extends StatelessWidget {
               ),
             ),
             Directionality(
-              textDirection: LanguageService.isLanguageRtl(context)
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
+              textDirection: LanguageService.isLanguageRtl(context) ? TextDirection.rtl : TextDirection.ltr,
               child: TopFlyingAppBar(
                 withNavitateSourah: false,
                 isLeftAligned: !LanguageService.isLanguageRtl(context),
@@ -132,10 +117,7 @@ class MoshafDisplay extends StatelessWidget {
               NavigateByPageNumberListView(
                 isBottomOpened: isBottomOpened,
               ),
-            if (isPlaying &&
-                ZoomService().getZoomEnumFromPercentage(zoomPercent) !=
-                    ZoomEnum.medium &&
-                !isBottomSheetOpened)
+            if (isPlaying && ZoomService().getZoomEnumFromPercentage(zoomPercent) != ZoomEnum.medium && !isBottomSheetOpened)
               const Positioned(
                 bottom: 0,
                 left: 0,
@@ -148,9 +130,7 @@ class MoshafDisplay extends StatelessWidget {
               BlocBuilder<JuzPopupCubit, JuzPopupState>(
                 builder: (context, state) {
                   if (state is JuzPopupEnabled) {
-                    return state.showPopup
-                        ? HizbAnimatedDialog(zoomPercentage: zoomPercent)
-                        : const SizedBox();
+                    return state.showPopup ? HizbAnimatedDialog(zoomPercentage: zoomPercent) : const SizedBox();
                   }
                   return const SizedBox.shrink();
                 },

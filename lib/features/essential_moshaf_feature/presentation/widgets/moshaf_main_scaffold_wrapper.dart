@@ -36,8 +36,7 @@ class MoshafMainScaffoldWrapper extends StatelessWidget {
         isShownToggleValue = EssentialMoshafCubit.get(context).isToShowAppBar;
         return BlocBuilder<ThemeCubit, ThemeState>(
           builder: (BuildContext context, ThemeState state) {
-            return BlocBuilder<MoshafBackgroundColorCubit,
-                MoshafBackgroundColorState>(
+            return BlocBuilder<MoshafBackgroundColorCubit, MoshafBackgroundColorState>(
               builder: (context, moshafBackgroundColorState) {
                 return BlocBuilder<ShareCubit, ShareState>(
                   builder: (context, shareState) {
@@ -46,21 +45,18 @@ class MoshafMainScaffoldWrapper extends StatelessWidget {
                       isShare = true;
                     }
 
-                    bool isRightAligned =
-                        LanguageService.isLanguageRtl(context);
+                    bool isRightAligned = LanguageService.isLanguageRtl(context);
 
                     return Scaffold(
                       key: AppConstants.moshafScaffoldKey,
                       onDrawerChanged: (bool isDrawerOpened) {
                         if (isDrawerOpened) {
-                          BottomWidgetCubit.get(AppContext.getAppContext()!)
-                              .setBottomWidgetState(false);
+                          BottomWidgetCubit.get(AppContext.getAppContext()!).setBottomWidgetState(false);
                         }
                       },
                       onEndDrawerChanged: (bool isDrawerOpened) {
                         if (isDrawerOpened) {
-                          BottomWidgetCubit.get(AppContext.getAppContext()!)
-                              .setBottomWidgetState(false);
+                          BottomWidgetCubit.get(AppContext.getAppContext()!).setBottomWidgetState(false);
                         }
                       },
                       endDrawer: !isRightAligned
@@ -82,9 +78,7 @@ class MoshafMainScaffoldWrapper extends StatelessWidget {
                               : _HamburgerMenu(
                                   scaffoldKey: AppConstants.moshafScaffoldKey,
                                 ),
-                      floatingActionButtonLocation: isShare
-                          ? FloatingActionButtonLocation.startFloat
-                          : FloatingActionButtonLocation.startTop,
+                      floatingActionButtonLocation: isShare ? FloatingActionButtonLocation.startFloat : FloatingActionButtonLocation.startTop,
                       resizeToAvoidBottomInset: false,
                       backgroundColor: state.brightness == Brightness.light
                           ? moshafBackgroundColorState.currentColor
@@ -120,16 +114,13 @@ class ZoomWrapper extends StatefulWidget {
 class _ZoomWrapperState extends State<ZoomWrapper> {
   bool isZoomingOut = false;
 
-  bool _maxZooming =
-      false; // To prevent multiple zoom level changes in one gesture
-  bool _zoomChanged =
-      false; // To prevent multiple zoom level changes in one gesture
+  bool _maxZooming = false; // To prevent multiple zoom level changes in one gesture
+  bool _zoomChanged = false; // To prevent multiple zoom level changes in one gesture
 
   final debouncer = Debouncer(milliseconds: 900);
   final debouncerForZoomout = Debouncer(milliseconds: 100);
 
-  final zw.TransformationController _transformationController =
-      zw.TransformationController();
+  final zw.TransformationController _transformationController = zw.TransformationController();
   @override
   void dispose() {
     _transformationController.dispose();
@@ -230,8 +221,7 @@ class _ZoomWrapperState extends State<ZoomWrapper> {
         child: GestureDetector(
           onScaleUpdate: (details) {
             // Detect zoom gestures and handle zoom levels
-            _handleZoom(
-                AyahRenderBlocHelper.getPageIndex(context), details.scale);
+            _handleZoom(AyahRenderBlocHelper.getPageIndex(context), details.scale);
           },
           onScaleEnd: (details) {
             _resetZoomState();
@@ -263,8 +253,7 @@ class SlideWrapper extends StatefulWidget {
 class _SlideWrapperState extends State<SlideWrapper> {
   double totalDistance = 0.0;
 
-  bool _zoomChanged =
-      false; // To prevent multiple zoom level changes in one gesture
+  bool _zoomChanged = false; // To prevent multiple zoom level changes in one gesture
 
   void _handleZoom(int pageIndex, double scale) {
     if (_zoomChanged) {
@@ -325,9 +314,7 @@ class _SlideWrapperState extends State<SlideWrapper> {
     if (totalDistance < _distanceToMove(isNegative: true) && pageIndex < 604) {
       // Left Swipe
       setState(() {
-        EssentialMoshafCubit.get(AppContext.getAppContext()!)
-            .moshafPageController
-            .animateToPage(
+        EssentialMoshafCubit.get(AppContext.getAppContext()!).moshafPageController.animateToPage(
               pageIndex - 1,
               duration: const Duration(milliseconds: 600),
               curve: Curves.easeInOut,
@@ -336,9 +323,7 @@ class _SlideWrapperState extends State<SlideWrapper> {
     } else if (totalDistance > _distanceToMove() && pageIndex >= 0) {
       // Right Swipe
       setState(() {
-        EssentialMoshafCubit.get(AppContext.getAppContext()!)
-            .moshafPageController
-            .animateToPage(
+        EssentialMoshafCubit.get(AppContext.getAppContext()!).moshafPageController.animateToPage(
               pageIndex + 1,
               duration: const Duration(milliseconds: 600),
               curve: Curves.easeInOut,
@@ -370,8 +355,7 @@ class _SlideWrapperState extends State<SlideWrapper> {
               onScaleUpdate: (details) {
                 if (details.pointerCount == 2) {
                   print("Two fingers ssss ${details.scale}");
-                  _handleZoom(AyahRenderBlocHelper.getPageIndex(context),
-                      details.scale);
+                  _handleZoom(AyahRenderBlocHelper.getPageIndex(context), details.scale);
                 }
               },
               onScaleEnd: (details) {

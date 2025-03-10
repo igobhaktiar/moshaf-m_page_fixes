@@ -17,18 +17,19 @@ class NewExternalLibrariesScreen extends StatefulWidget {
   const NewExternalLibrariesScreen({super.key});
 
   @override
-  State<NewExternalLibrariesScreen> createState() =>
-      _NewExternalLibrariesScreenState();
+  State<NewExternalLibrariesScreen> createState() => _NewExternalLibrariesScreenState();
 }
 
 // In external_libraries_cubit.dart
 
-class _NewExternalLibrariesScreenState
-    extends State<NewExternalLibrariesScreen> {
+class _NewExternalLibrariesScreenState extends State<NewExternalLibrariesScreen> {
+  late ExternalLibrariesCubit _cubit;
+
   @override
   void initState() {
     super.initState();
-    context.read<ExternalLibrariesCubit>().initExternalLibrariesCubit();
+    _cubit = BlocProvider.of<ExternalLibrariesCubit>(context);
+    _cubit.initExternalLibrariesCubit();
   }
 
   @override
@@ -44,8 +45,7 @@ class _NewExternalLibrariesScreenState
       ),
       body: BlocBuilder<ExternalLibrariesCubit, ExternalLibrariesState>(
         builder: (context, state) {
-          final externalLibrary =
-              context.read<ExternalLibrariesCubit>().externalLibrary;
+          final externalLibrary = _cubit.externalLibrary;
 
           if (externalLibrary == null) {
             return Center(
@@ -60,19 +60,13 @@ class _NewExternalLibrariesScreenState
           return SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.max,
-              children:
-                  externalLibraryResourcesList.map<Widget>((libraryResource) {
+              children: externalLibraryResourcesList.map<Widget>((libraryResource) {
                 return GestureDetector(
                   onTap: () async {
-                    bool isDownloaded = await context
-                        .read<ExternalLibrariesCubit>()
-                        .pdfFileIsDownloaded(
-                            libraryResource.title!, libraryResource.fileSize!);
+                    bool isDownloaded = await _cubit.pdfFileIsDownloaded(libraryResource.title!, libraryResource.fileSize!);
                     print("isDownloaded: $isDownloaded");
                     if (isDownloaded) {
-                      await context
-                          .read<ExternalLibrariesCubit>()
-                          .openFileExternal(context, libraryResource.title!);
+                      await _cubit.openFileExternal(context, libraryResource.title!);
                     }
                   },
                   child: Slidable(
@@ -83,36 +77,25 @@ class _NewExternalLibrariesScreenState
                       children: [
                         Expanded(
                           child: Container(
-                            color: context.theme.brightness == Brightness.dark
-                                ? context.theme.scaffoldBackgroundColor
-                                : const Color(0xFFFEF2F2),
+                            color: context.theme.brightness == Brightness.dark ? context.theme.scaffoldBackgroundColor : const Color(0xFFFEF2F2),
                             child: Container(
                               alignment: Alignment.center,
                               child: Builder(
                                 builder: (ctx) {
                                   return InkWell(
                                     onTap: () {
-                                      context
-                                          .read<ExternalLibrariesCubit>()
-                                          .deletePdf(libraryResource.title!);
+                                      _cubit.deletePdf(libraryResource.title!);
                                     },
                                     child: Center(
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: <Widget>[
-                                          SvgPicture.asset(AppAssets.delete,
-                                              color: Colors.red),
+                                          SvgPicture.asset(AppAssets.delete, color: Colors.red),
                                           const SizedBox(width: 10),
                                           Text(
                                             context.translate.delete,
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                height: 1.4,
-                                                color: AppColors.red,
-                                                fontWeight: FontWeight.w500),
+                                            style: const TextStyle(fontSize: 16, height: 1.4, color: AppColors.red, fontWeight: FontWeight.w500),
                                             textAlign: TextAlign.center,
                                           ),
                                         ],
@@ -128,6 +111,7 @@ class _NewExternalLibrariesScreenState
                     ),
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 10),
+                      height: 50,
                       child: Row(
                         children: [
                           const SizedBox(width: 12),
@@ -137,98 +121,94 @@ class _NewExternalLibrariesScreenState
                               width: 40,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color:
-                                    context.theme.brightness == Brightness.dark
-                                        ? AppColors.dialogBgDark
-                                        : AppColors.lightGrey,
+                                color: context.theme.brightness == Brightness.dark ? AppColors.dialogBgDark : AppColors.lightGrey,
                               ),
                               child: SvgPicture.asset(
                                 AppAssets.tenReadingsIcon,
-                                color:
-                                    context.theme.brightness == Brightness.dark
-                                        ? AppColors.white
-                                        : null,
+                                color: context.theme.brightness == Brightness.dark ? AppColors.white : null,
                               ),
                             ),
                           ),
                           const SizedBox(width: 15),
                           Expanded(
-                            child: Text(libraryResource.title!,
-                                style: context.textTheme.bodyMedium!
-                                    .copyWith(fontSize: 14)),
+                            child: Text(libraryResource.title!, style: context.textTheme.bodyMedium!.copyWith(fontSize: 14)),
                           ),
                           const SizedBox(width: 10),
                           StreamBuilder(
-                            stream: context
-                                .read<ExternalLibrariesCubit>()
-                                .pdfFileIsDownloaded(libraryResource.title!,
-                                    libraryResource.fileSize!)
-                                .asStream(),
+                            stream: _cubit.pdfFileIsDownloaded(libraryResource.title!, libraryResource.fileSize!).asStream(),
                             builder: (BuildContext ctx, AsyncSnapshot f) {
-                              final isDownloading = context
-                                          .read<ExternalLibrariesCubit>()
-                                          .isDownloadingPdfMap[
-                                      libraryResource.title!] ==
-                                  true;
-                              String percentage = context
-                                  .read<ExternalLibrariesCubit>()
-                                  .downloadingPdfProgressMap[
-                                      libraryResource.title!]
-                                  .toString();
+                              final isDownloading = _cubit.isDownloadingPdfMap[libraryResource.title!] == true;
+                              String percentage = _cubit.downloadingPdfProgressMap[libraryResource.title!] ?? '0.0';
+                              final isPaused = _cubit.isPaused[libraryResource.title!] == true;
 
-                              if (isDownloading) {
+                              if (isDownloading || isPaused) {
                                 return Padding(
                                     padding: const EdgeInsets.all(8),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: Center(
-                                            child: CircularProgressIndicator(),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        print('isPaused: $isPaused');
+
+                                        if (isPaused) {
+                                          _cubit.resumeDownload(libraryResource, context);
+                                        } else {
+                                          _cubit.pauseDownload(libraryResource.title!);
+                                        }
+
+                                        setState(() {});
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              SizedBox(
+                                                height: 50,
+                                                width: 50,
+                                                child: Center(
+                                                  child: isPaused == true ? SvgPicture.asset(AppAssets.play) : const CircularProgressIndicator(),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                left: 0,
+                                                right: 0,
+                                                top: 0,
+                                                bottom: 0,
+                                                child: Center(
+                                                  child: isPaused == true
+                                                      ? const SizedBox()
+                                                      : isPaused == false
+                                                          ? SvgPicture.asset(AppAssets.pause)
+                                                          : const SizedBox(),
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        SizedBox(
-                                          height: 20,
-                                          child: Center(
-                                            child: Text(
-                                              "$percentage %",
-                                              textDirection: TextDirection.ltr,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 12.0),
+                                          const SizedBox(width: 15),
+                                          SizedBox(
+                                            height: 20,
+                                            child: Center(
+                                              child: Text(
+                                                "$percentage %",
+                                                textDirection: TextDirection.ltr,
+                                                style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 12.0),
+                                              ),
                                             ),
                                           ),
-                                        ),
-
-                                        ///******************* */
-                                      ].reversed.toList(),
+                                        ].reversed.toList(),
+                                      ),
                                     ));
                               } else {
                                 return StreamBuilder(
-                                    stream: context
-                                        .read<ExternalLibrariesCubit>()
-                                        .isFileNeedsUpdatte(libraryResource)
-                                        .asStream(),
-                                    builder:
-                                        (BuildContext ctx2, AsyncSnapshot ff) {
+                                    stream: _cubit.isFileNeedsUpdatte(libraryResource).asStream(),
+                                    builder: (BuildContext ctx2, AsyncSnapshot ff) {
                                       if (ff.data == true) {
                                         return InkWell(
-                                          onTap: () => _onUpdateResourcePressed(
-                                              context, libraryResource),
+                                          onTap: () => _onUpdateResourcePressed(context, libraryResource),
                                           child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10, vertical: 5),
-                                            decoration: BoxDecoration(
-                                                color: context.theme.appBarTheme
-                                                    .backgroundColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            decoration: BoxDecoration(color: context.theme.appBarTheme.backgroundColor, borderRadius: BorderRadius.circular(5)),
                                             child: Text(
                                               context.translate.update,
-                                              style:
-                                                  const TextStyle(fontSize: 12),
+                                              style: const TextStyle(fontSize: 12),
                                             ),
                                           ),
                                         );
@@ -237,25 +217,12 @@ class _NewExternalLibrariesScreenState
                                           return InkWell(
                                               child: SvgPicture.asset(
                                                 AppAssets.downloadDisabled,
-                                                color: context.isDarkMode
-                                                    ? Colors.white
-                                                    : null,
+                                                color: context.isDarkMode ? Colors.white : null,
                                               ),
                                               onTap: () async {
-                                                // MoshafSnackbar.triggerSnackbar(
-                                                //   context,
-                                                //   text:
-                                                //       "${context.translate.downloading} ${libraryResource.title}",
-                                                // );
-                                                print(
-                                                    "Downloading function called");
+                                                print("Downloading function called");
                                                 try {
-                                                  await ctx
-                                                      .read<
-                                                          ExternalLibrariesCubit>()
-                                                      .downloadExternalLibrary(
-                                                          libraryResource,
-                                                          context);
+                                                  await ctx.read<ExternalLibrariesCubit>().downloadExternalLibrary(libraryResource, context);
                                                 } on Exception catch (e) {
                                                   print(e);
                                                 }
@@ -265,40 +232,19 @@ class _NewExternalLibrariesScreenState
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  SvgPicture.asset(
-                                                      AppAssets.checkBlack),
+                                                  SvgPicture.asset(AppAssets.checkBlack),
                                                   StreamBuilder(
-                                                      stream: context
-                                                          .read<
-                                                              ExternalLibrariesCubit>()
-                                                          .getFileSizeInMB(
-                                                              libraryResource
-                                                                  .title!)
-                                                          .asStream(),
-                                                      builder: (BuildContext
-                                                              ctx,
-                                                          AsyncSnapshot fff) {
-                                                        final String fileSize =
-                                                            fff.data ?? '';
+                                                      stream: _cubit.getFileSizeInMB(libraryResource.title!).asStream(),
+                                                      builder: (BuildContext ctx, AsyncSnapshot fff) {
+                                                        final String fileSize = fff.data ?? '';
 
                                                         if (fileSize != '') {
                                                           return Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        12),
+                                                            padding: const EdgeInsets.symmetric(horizontal: 12),
                                                             child: Text(
                                                               fileSize,
-                                                              textDirection:
-                                                                  TextDirection
-                                                                      .ltr,
-                                                              style: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .normal,
-                                                                  fontSize:
-                                                                      12.0),
+                                                              textDirection: TextDirection.ltr,
+                                                              style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 12.0),
                                                             ),
                                                           );
                                                         } else {
@@ -308,23 +254,10 @@ class _NewExternalLibrariesScreenState
                                                 ].reversed.toList(),
                                               ),
                                               onTap: () async {
-                                                bool isDownloaded = await context
-                                                    .read<
-                                                        ExternalLibrariesCubit>()
-                                                    .pdfFileIsDownloaded(
-                                                        libraryResource.title!,
-                                                        libraryResource
-                                                            .fileSize!);
-                                                print(
-                                                    "isDownloaded: $isDownloaded");
+                                                bool isDownloaded = await _cubit.pdfFileIsDownloaded(libraryResource.title!, libraryResource.fileSize!);
+                                                print("isDownloaded: $isDownloaded");
                                                 if (isDownloaded) {
-                                                  await ctx
-                                                      .read<
-                                                          ExternalLibrariesCubit>()
-                                                      .openFileExternal(
-                                                          context,
-                                                          libraryResource
-                                                              .title!);
+                                                  await ctx.read<ExternalLibrariesCubit>().openFileExternal(context, libraryResource.title!);
                                                 }
                                               });
                                         }
@@ -348,8 +281,6 @@ class _NewExternalLibrariesScreenState
   }
 
   _onUpdateResourcePressed(BuildContext context, Resource libraryResource) {
-    context
-        .read<ExternalLibrariesCubit>()
-        .deleteAndDownloadUpdatedFile(libraryResource, context);
+    _cubit.deleteAndDownloadUpdatedFile(libraryResource, context);
   }
 }

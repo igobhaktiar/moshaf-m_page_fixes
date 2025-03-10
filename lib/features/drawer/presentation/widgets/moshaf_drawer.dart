@@ -60,10 +60,7 @@ class MoshafDrawer extends StatelessWidget {
       child: BlocBuilder<LangCubit, LangState>(
         builder: (context, state) {
           return Directionality(
-            textDirection: LangCubit.get(context).currentLocale.languageCode ==
-                    AppStrings.englishCode
-                ? TextDirection.rtl
-                : TextDirection.ltr,
+            textDirection: LangCubit.get(context).currentLocale.languageCode == AppStrings.englishCode ? TextDirection.rtl : TextDirection.ltr,
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
@@ -190,15 +187,7 @@ class MoshafDrawer extends StatelessWidget {
                               pushSlide(
                                 context,
                                 pushWithOverlayValues: true,
-                                screen: SurahPlayerScreen(
-                                    selectedSurahId:
-                                        surahCubit.currentSurahPlaying!,
-                                    currentReciter:
-                                        surahCubit.currentReciterPlaying!,
-                                    reciterName: getReciterName(
-                                        surahCubit.currentReciterPlaying!,
-                                        context.translate.localeName ==
-                                            AppStrings.arabicCode)),
+                                screen: SurahPlayerScreen(selectedSurahId: surahCubit.currentSurahPlaying!, currentReciter: surahCubit.currentReciterPlaying!, reciterName: getReciterName(surahCubit.currentReciterPlaying!, context.translate.localeName == AppStrings.arabicCode)),
                               );
                             },
                           );
@@ -271,8 +260,7 @@ class MoshafDrawer extends StatelessWidget {
                   ),
                   _DrawerTile(
                     text: context.translate.supplication_to_complete_quran,
-                    iconAsset:
-                        DrawerConstants.drawerSuppllicationOfCompletionIcon,
+                    iconAsset: DrawerConstants.drawerSuppllicationOfCompletionIcon,
                     onTap: () => _navigateToOtherScreen(
                       context,
                       navigationFunction: () => pushSlide(
@@ -310,8 +298,7 @@ class MoshafDrawer extends StatelessWidget {
                       }),
                   _DrawerTile(
                     text: context.translate.introduction_to_holy_quran,
-                    iconAsset:
-                        DrawerConstants.drawerIntroductionToHolyQuranIcon,
+                    iconAsset: DrawerConstants.drawerIntroductionToHolyQuranIcon,
                     onTap: () => _navigateToOtherScreen(
                       context,
                       navigationFunction: () => pushSlide(
